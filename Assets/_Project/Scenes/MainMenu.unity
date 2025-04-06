@@ -533,6 +533,7 @@ MonoBehaviour:
   tasks:
   - {fileID: 11400000, guid: 84d3ff84dda8f4730ae660d0c00faee1, type: 2}
   - {fileID: 11400000, guid: 6396ceca6a5564fe286d1308fded74ef, type: 2}
+  - {fileID: 11400000, guid: ffa5d7124298f4c1d9143f65128434d0, type: 2}
 --- !u!4 &956159562
 Transform:
   m_ObjectHideFlags: 0
