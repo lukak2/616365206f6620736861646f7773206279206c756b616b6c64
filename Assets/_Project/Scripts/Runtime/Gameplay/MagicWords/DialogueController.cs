@@ -57,6 +57,7 @@ namespace Scripts.Runtime.Gameplay.MagicWords
             if (_currentLineIndex >= _dialogueLines.Count)
             {
                 Debug.Log("No more dialogue lines.");
+                nextButton.gameObject.SetActive(false);
                 return;
             }
             
