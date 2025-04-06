@@ -165,6 +165,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   apiController: {fileID: 1326536620}
   dialogueController: {fileID: 1260307503}
+  emojiSample: {fileID: 21300000, guid: b441a87dc5e9e4062ac21787be55a32c, type: 3}
+  emojiMaterial: {fileID: 2100000, guid: ec75c1c19718b4292a630dc702f3f8e1, type: 2}
   useSampleData: 1
 --- !u!1 &910462207
 GameObject:
@@ -453,7 +455,7 @@ MonoBehaviour:
     \"Sheldon\", \"text\": \"Agreed. {neutral} Though I still maintain chess simulators
     are superior.\"},         {\"name\": \"Penny\", \"text\": \"Sure, Sheldon. {intrigued}
     You can play chess *after* we beat this next level.\"}     ],     \"emojies\":    
-    [         {             \"name\": \"sad\",             \"url\": \"https://api.dicebear.com:81/9.x/fun-emoji/png?seed=Sad\"        
+    [         {             \"name\": \"sad\",             \"url\": \"https://api.dicebear.com/9.x/fun-emoji/png?seed=Sad\"        
     },         {             \"name\": \"intrigued\",             \"url\": \"https://api.dicebear.com/9.x/fun-emoji/png?seed=Sawyer\"        
     },         {             \"name\": \"neutral\",             \"url\": \"https://api.dicebear.com/9.x/fun-emoji/png?seed=Destiny\"        
     },         {             \"name\": \"satisfied\",             \"url\": \"https://api.dicebear.com/9.x/fun-emoji/png?seed=Jocelyn\"        
@@ -518,7 +520,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: New Text
+  m_text: New Text <sprite=0> <sprite name="sad">
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 79677be7407e14078adf997a8bcadb76, type: 2}
   m_sharedMaterial: {fileID: -1046714357949833248, guid: 79677be7407e14078adf997a8bcadb76, type: 2}

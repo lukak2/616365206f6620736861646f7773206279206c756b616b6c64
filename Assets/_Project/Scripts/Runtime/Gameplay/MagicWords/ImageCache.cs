@@ -1,14 +1,16 @@
 using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.TextCore;
 
 namespace Scripts.Runtime.Gameplay.MagicWords
 {
     public static class ImageCache
     {
         // TODO: Consider using a more sophisticated caching mechanism (e.g., LRU cache) and caching as files.
-        public static Dictionary<string, Sprite> AvatarSprites { get; } = new Dictionary<string, Sprite>();
+        public static Dictionary<string, Texture2D> Textures { get; } = new Dictionary<string, Texture2D>();
         
         /// <summary>
         /// Asynchronously gets a Sprite for the given URL.
@@ -16,7 +18,7 @@ namespace Scripts.Runtime.Gameplay.MagicWords
         /// </summary>
         /// <param name="url">The URL of the image to load.</param>
         /// <returns>A Task resulting in the Sprite, or null if an error occurred or the URL is invalid.</returns>
-        public static async UniTask<Sprite> GetAvatarSpriteAsync(string url)
+        public static async UniTask<Texture2D> GetTexture2DAsync(string url)
         {
             if (string.IsNullOrEmpty(url))
             {
@@ -25,7 +27,7 @@ namespace Scripts.Runtime.Gameplay.MagicWords
             }
 
             // Check cache first
-            if (AvatarSprites.TryGetValue(url, out Sprite cachedSprite))
+            if (Textures.TryGetValue(url, out Texture2D cachedSprite))
             {
                 return cachedSprite;
             }
@@ -57,23 +59,33 @@ namespace Scripts.Runtime.Gameplay.MagicWords
                         return null;
                     }
 
-                    Sprite newSprite = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f));
-
-                    if (newSprite != null)
-                    {
-                        // Add to cache
-                        AvatarSprites[url] = newSprite;
-                        return newSprite;
-                    }
-                    else
-                    {
-                        Debug.LogError($"Failed to create sprite from texture downloaded from {url}");
-                        // Clean up the created texture if sprite creation failed
-                        Object.Destroy(texture);
-                        return null;
-                    }
+                    return texture;
                 }
             }
+            
+        }
+        
+        public static Texture2D PackTexturesIntoAtlas(Texture2D[] sourceTextures, out Rect[] uvs, int padding = 2)
+        {
+            // Ensure all textures are readable
+            for (int i = 0; i < sourceTextures.Length; i++)
+            {
+                if (!sourceTextures[i].isReadable)
+                    Debug.LogWarning($"Texture {i} is not readable!");
+            }
+
+            // Create the atlas
+            Texture2D atlas = new Texture2D(2048, 2048, TextureFormat.RGBA32, false);
+            atlas.name = "EmojiAtlas";
+            uvs = atlas.PackTextures(sourceTextures, padding, 2048);
+
+            atlas.Apply();
+            return atlas;
+        }
+        
+        public static Sprite ToSprite(Texture2D texture)
+        {
+            return Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f));
         }
     }
 }

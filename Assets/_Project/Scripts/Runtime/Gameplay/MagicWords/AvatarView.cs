@@ -14,5 +14,15 @@ namespace Scripts.Runtime.Gameplay.MagicWords
             avatarImage.sprite = avatarSprite;
             nameText.SetText(avatarName);
         }
+
+        public void Show()
+        {
+            gameObject.SetActive(true);
+        }
+
+        public void Hide()
+        {
+            gameObject.SetActive(false);
+        }
     }
 }
