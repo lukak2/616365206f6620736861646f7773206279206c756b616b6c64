@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.kyrylokuzyk.primetween": "file:../Packages/com.kyrylokuzyk.primetween.tgz",
     "com.codewriter.triinspector": "1.14.1",
     "com.cysharp.unitask": "2.5.10",
     "com.tayx.graphy": "3.0.5",
