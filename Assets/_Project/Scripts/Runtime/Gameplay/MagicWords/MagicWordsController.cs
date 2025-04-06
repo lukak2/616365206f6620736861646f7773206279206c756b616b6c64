@@ -20,7 +20,6 @@ namespace Scripts.Runtime.Gameplay.MagicWords
         private void Start()
         {
             InitializeAsync().Forget();
-            // dialogueController.SetSpriteAsset(CreateSpriteAssetFromAtlas(emojiSample));
         }
 
         private async UniTask InitializeAsync()
@@ -35,7 +34,6 @@ namespace Scripts.Runtime.Gameplay.MagicWords
                 dialogueController.AddAvatar(avatarSprite, avatar.name, avatar.position);
             }
             
-            // Dictionary<string, Sprite> emojiLookup = new Dictionary<string, Sprite>();
             var emojiTextures = new Dictionary<string, Texture2D>();
             
             foreach (var emoji in response.emojies)
@@ -50,15 +48,11 @@ namespace Scripts.Runtime.Gameplay.MagicWords
             List<DialogueLine> dialogueLines = response.dialogue
                 .Select(d => new DialogueLine(d.name, d.text)).ToList();
             
-            // I admit {satisfied} the design of Cookie Crush is quite elegant in its simplicity
-            
-            // dialogueController.Initialize(emojiLookup, dialogueLines);
             dialogueController.SetSpriteAsset(CreateSpriteAssetFromAtlas(emojiTextures, packedAtlas, uvRects));
+            dialogueController.Initialize(dialogueLines);
             
-            // dialogueController.NextDialogueLine();
+            dialogueController.NextDialogueLine();
         }
-
-        
         
         public TMP_SpriteAsset CreateSpriteAssetFromAtlas(Dictionary<string, Texture2D> emojiLookup, Texture2D atlas, Rect[] uvRects)
         {
@@ -74,7 +68,6 @@ namespace Scripts.Runtime.Gameplay.MagicWords
             
             uint unicodeStart = 0xE000; // Private Use Unicode block
 
-            var glyphs = new List<TMP_SpriteGlyph>();
             var characters = new List<TMP_SpriteCharacter>();
             
             for (int i = 0; i < uvRects.Length; i++)
@@ -93,19 +86,6 @@ namespace Scripts.Runtime.Gameplay.MagicWords
                 // Create Sprite manually
                 Sprite sprite = Sprite.Create(atlas, pixelRect, new Vector2(0.5f, 0.5f));
                 sprite.name = emojiLookup.ElementAt(i).Key;
-
-                // Create Glyph
-                var glyph = new TMP_SpriteGlyph
-                {
-                    index = index,
-                    sprite = sprite,
-                    metrics = new GlyphMetrics(pixelRect.width, pixelRect.height, 0, pixelRect.height, pixelRect.width)
-                    {
-                        horizontalBearingY = 115.6f,
-                        horizontalAdvance = pixelRect.width
-                    },
-                    glyphRect = new GlyphRect((int)pixelRect.x, (int)pixelRect.y, (int)pixelRect.width, (int)pixelRect.height)
-                };
 
                 // Create Character
                 var character = new TMP_SpriteCharacter
@@ -128,14 +108,8 @@ namespace Scripts.Runtime.Gameplay.MagicWords
                     xAdvance = pixelRect.width,
                 });
 
-                glyphs.Add(glyph);
                 characters.Add(character);
             }
-
-            // foreach (var glyph in glyphs)
-            // {
-            //     spriteAsset.spriteGlyphTable.Add(glyph);
-            // }
             
             spriteAsset.spriteCharacterTable.Clear();
             

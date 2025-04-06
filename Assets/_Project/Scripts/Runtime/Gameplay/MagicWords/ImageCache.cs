@@ -1,16 +1,15 @@
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Cysharp.Threading.Tasks;
-using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.TextCore;
 
 namespace Scripts.Runtime.Gameplay.MagicWords
 {
     public static class ImageCache
     {
         // TODO: Consider using a more sophisticated caching mechanism (e.g., LRU cache) and caching as files.
-        public static Dictionary<string, Texture2D> Textures { get; } = new Dictionary<string, Texture2D>();
+        private static Dictionary<string, Texture2D> TextureChache { get; } = new Dictionary<string, Texture2D>();
         
         /// <summary>
         /// Asynchronously gets a Sprite for the given URL.
@@ -20,6 +19,9 @@ namespace Scripts.Runtime.Gameplay.MagicWords
         /// <returns>A Task resulting in the Sprite, or null if an error occurred or the URL is invalid.</returns>
         public static async UniTask<Texture2D> GetTexture2DAsync(string url)
         {
+            // URL is not sanitized when we receive it, so we need to do it here.
+            url = SanitizeUrl(url);
+            
             if (string.IsNullOrEmpty(url))
             {
                 Debug.LogError("GetAvatarSpriteAsync: URL cannot be null or empty.");
@@ -27,7 +29,7 @@ namespace Scripts.Runtime.Gameplay.MagicWords
             }
 
             // Check cache first
-            if (Textures.TryGetValue(url, out Texture2D cachedSprite))
+            if (TextureChache.TryGetValue(url, out Texture2D cachedSprite))
             {
                 return cachedSprite;
             }
@@ -86,6 +88,20 @@ namespace Scripts.Runtime.Gameplay.MagicWords
         public static Sprite ToSprite(Texture2D texture)
         {
             return Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f));
+        }
+        
+        private static string SanitizeUrl(string url)
+        {
+            // Use regex to remove any port specification (colon followed by numbers before a slash or end of string)
+            string sanitized = Regex.Replace(url, ":\\d+(?=/|$)", "");
+        
+            // If the URL was modified, log the change
+            if (url != sanitized)
+            {
+                Debug.Log($"Sanitized URL from {url} to {sanitized}");
+            }
+        
+            return sanitized;
         }
     }
 }

@@ -45,6 +45,7 @@ namespace Scripts.Runtime.Gameplay.MagicWords
                 else
                 {
                     string jsonResponse = webRequest.downloadHandler.text;
+                    
                     try
                     {
                         Response data = JsonConvert.DeserializeObject<Response>(jsonResponse);

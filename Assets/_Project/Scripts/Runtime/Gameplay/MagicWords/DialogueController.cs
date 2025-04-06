@@ -1,31 +1,44 @@
+using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Scripts.Runtime.Gameplay.MagicWords
 {
     public class DialogueController : MonoBehaviour
     {
+        [Header("References")]
         [SerializeField] private RectTransform leftAvatarContainer;
         [SerializeField] private RectTransform rightAvatarContainer;
-        
-        [SerializeField] private AvatarView avatarPrefab;
-        
-        
+
+        [SerializeField] private Button nextButton;
         [SerializeField] private TMP_Text dialogueText;
+        
+        [Header("Properties")]
+        [SerializeField] private AvatarView avatarPrefab;
 
         private Dictionary<string, AvatarView> _avatarLookup = new Dictionary<string, AvatarView>();
-        private Dictionary<string, Sprite> _emojiLookup = new Dictionary<string, Sprite>();
         private List<DialogueLine> _dialogueLines = new List<DialogueLine>();
         
         private int _currentLineIndex = 0;
 
-        public void Initialize(Dictionary<string, Sprite> emojiLookup, List<DialogueLine> dialogueLines)
+        public void Initialize(List<DialogueLine> dialogueLines)
         {
-            _emojiLookup = emojiLookup;
             _dialogueLines = dialogueLines;
         }
-        
+
+        private void OnEnable()
+        {
+            nextButton.onClick.AddListener(NextDialogueLine);
+        }
+
+        private void OnDisable()
+        {
+            nextButton.onClick.RemoveListener(NextDialogueLine);
+        }
+
         public void SetSpriteAsset(TMP_SpriteAsset spriteAsset)
         {
             dialogueText.spriteAsset = spriteAsset;
@@ -41,6 +54,12 @@ namespace Scripts.Runtime.Gameplay.MagicWords
 
         public void NextDialogueLine()
         {
+            if (_currentLineIndex >= _dialogueLines.Count)
+            {
+                Debug.Log("No more dialogue lines.");
+                return;
+            }
+            
             DisplayDialogueLine(_dialogueLines[_currentLineIndex]);
             
             _currentLineIndex++;
@@ -59,7 +78,10 @@ namespace Scripts.Runtime.Gameplay.MagicWords
                 avatarView.Show();
             }
             
-            dialogueText.SetText(line.DialogueText);
+            // Replace emoji placeholders with sprite tags
+            var emojiText = Regex.Replace(line.DialogueText, @"\{([^\{\}]+)\}", "<sprite name=\"$1\">");
+            
+            dialogueText.SetText(emojiText);
         }
     }
 }
