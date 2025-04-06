@@ -3,24 +3,30 @@ using System.Linq;
 using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
-using UnityEngine.TextCore;
 
 namespace Scripts.Runtime.Gameplay.MagicWords
 {
     public class MagicWordsController : MonoBehaviour
     {
+        [Header("References")]
         [SerializeField] private ApiController apiController;
         [SerializeField] private DialogueController dialogueController;
+        [SerializeField] private GameObject loadingCanvasObject;
 
+        [Header("Parameters")]
         [SerializeField] private Material emojiMaterial;
-
         [SerializeField] private bool useSampleData;
         
         
         private void Start()
         {
-            InitializeAsync().Forget();
+            ShowLoading();
+            
+            InitializeAsync().ContinueWith(HideLoading).Forget();
         }
+
+        private void ShowLoading() => loadingCanvasObject.SetActive(true);
+        private void HideLoading() => loadingCanvasObject.SetActive(false);
 
         private async UniTask InitializeAsync()
         {
